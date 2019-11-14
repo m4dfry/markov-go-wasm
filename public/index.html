@@ -1,0 +1,119 @@
+<!doctype html>
+<!--
+Copyright 2018 The Go Authors. All rights reserved.
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE file.
+-->
+<!-- 
+Bootstrap4 - Starter template
+https://getbootstrap.com/docs/4.0/getting-started/introduction/#starter-template
+-->
+<html lang="en">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+	<title>Markov Playground</title>
+</head>
+
+<body>
+
+	<script src="wasm_exec.js"></script>
+	<script src="markov.js"></script>
+	<script>
+
+		if (!WebAssembly.instantiateStreaming) { // polyfill
+			WebAssembly.instantiateStreaming = async (resp, importObject) => {
+				const source = await (await resp).arrayBuffer();
+				return await WebAssembly.instantiate(source, importObject);
+			};
+		}
+
+		const go = new Go();
+		let mod, inst;
+
+		WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then(
+			async (result) => {
+				mod = result.module;
+				inst = result.instance;
+				await go.run(inst);
+			}).catch((err) => {
+				console.error(err);
+			}
+			);
+
+		function createChain() {
+			const order = document.getElementById('chain-order').value;
+			jCreateChain(order); // markov.js
+		}
+		function readTextArea() {
+			const data = document.getElementById('text-area').value;
+			read(data);
+		}
+		function read() {
+			jRead(data); // markov.js
+		}
+	</script>
+
+	<div class="row">
+		<div class="col-md-10 offset-md-1">
+			<h1>Go WASM - Markov Chain Playground!</h1>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-2 offset-md-1">
+			<div class="input-group mb-3">
+				<div class="input-group-append">
+					<span id="chain-order" class="input-group-text" id="inputGroup-sizing-default">Order</span>
+				</div>
+				<input type="text" class="form-control" aria-label="Default"
+					aria-describedby="inputGroup-sizing-default">
+			</div>
+		</div>
+		<div class="col-md-1">
+			<button onClick="createChain();" id="createChain" disabled class="btn btn-primary">Create Chain</button>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-8 offset-md-1">
+
+			<p>Write here </p>
+			<div class="input-group">
+				<textarea id="text-area" class="form-control" aria-label="With textarea"></textarea>
+				<div class="input-group-append">
+					<span class="input-group-text" onClick="readTextArea();">Load
+						text</span>
+				</div>
+			</div>
+			<br />
+			<p>or load from file </p>
+			<div class="input-group mb-3">
+				<div class="custom-file">
+					<input type="file" class="custom-file-input" id="inputGroupFile02" onChange="read(this);">
+					<label class="custom-file-label" for="inputGroupFile02">Load file</label>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+		crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>
