@@ -19,3 +19,9 @@ async function jGetJSONChain() {
 	}
 }
 
+async function jGenerate(prefix, length) {
+	const res = wGenerate(prefix, length);
+	console.log(res)
+}
+
+
