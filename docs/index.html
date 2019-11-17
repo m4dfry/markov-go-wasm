@@ -56,8 +56,18 @@ https://getbootstrap.com/docs/4.0/getting-started/introduction/#starter-template
 				document.getElementById('chain-info').innerHTML = "Chain with order " + order + " created!";
 				document.getElementById('load-row').classList.remove("d-none");
 			} catch(e) {
-				alert(e);
+				addAlert(e);
 			}
+		}
+
+		function addAlert(message) {
+			document.getElementById('alert-container').insertAdjacentHTML('afterbegin',
+				`<div class="alert alert-warning alert-dismissible fade show" role="alert">
+					<strong>Error:</strong> ` + message + `
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+		  		</div>`);
 		}
 		function readTextArea() {
 			const data = document.getElementById('text-area').value;
@@ -74,8 +84,10 @@ https://getbootstrap.com/docs/4.0/getting-started/introduction/#starter-template
 		</div>
 	</div>
 
+
+
 	<div class="row">
-		<div class="col-md-2 offset-md-1">
+		<div class="col-md-2 col-4 offset-md-1">
 			<div class="input-group mb-3">
 				<div class="input-group-append">
 					<span class="input-group-text" id="inputGroup-sizing-default">Order</span>
@@ -94,13 +106,13 @@ https://getbootstrap.com/docs/4.0/getting-started/introduction/#starter-template
 				<p id="chain-info"><br/>
 				<p>Load the chain with text you prefer.<br/>
 					You can use this text box </p>
+				
+
 				<div class="input-group">
 					<textarea id="text-area" class="form-control" aria-label="With textarea"></textarea>
-					<div class="input-group-append">
-						<span class="input-group-text" onClick="readTextArea();">Load
-							text</span>
-					</div>
+					<button onClick="readTextArea();" class="btn btn-primary">Load</button>
 				</div>
+
 				<br />
 				<p>or load text from file :</p>
 				<div class="input-group mb-3">
@@ -118,8 +130,18 @@ https://getbootstrap.com/docs/4.0/getting-started/introduction/#starter-template
 				<button onClick="jGetJSONChain();" id="createJSONChain" class="btn btn-primary">Get JSON</button>
 			</div>
 		</div>
+		
 	</div>
-			
+	<div class="row">
+		<div id="alert-container" class="col-md-10 offset-md-1">
+			<div class="alert alert-warning alert-dismissible fade show" role="alert">
+				<strong>Error:</strong> You should check in on some of those fields below.
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			  		<span aria-hidden="true">&times;</span>
+				</button>
+		  	</div>
+		</div>
+	</div>
 	<!-- Optional JavaScript -->
 	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

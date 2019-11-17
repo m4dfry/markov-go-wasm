@@ -21,7 +21,9 @@ Go compiler for WASM is on early stage an library like "syscall/js" are still in
 This project is compiled with Go 1.13.4.
 
 ## TODO
- - Correct width of order input  box, mobile error
+ - Add sentence creation from seed
+ - Check if seed is OK with order
+ - Export JSON on file
 
 ## License
 
