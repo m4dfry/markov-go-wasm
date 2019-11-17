@@ -1,18 +1,27 @@
 # markov-go-wasm
 This project build a Markov Chain Playground on WASM
 
+## Goal
+
+This project was born with the purpose of loading a basic implementation of the Markov chain completely on the browser, compiles in WASM and is loaded directly on the github-pages through the directory *docs*.
+
+The result is available at: [https://blog.m4dfry.space/markov-go-wasm/](https://blog.m4dfry.space/markov-go-wasm/)
+
 ## Makefile
 
-Compile WASM file in public folder
+Compile main.go with WASM and load on docs folder
 > make wasm
 
-Run serve of public folder to test locally
+Run serve of docs folder to test locally
 > make serv
 
 ## Notes
 
 Go compiler for WASM is on early stage an library like "syscall/js" are still in experimental state.
 This project is compiled with Go 1.13.4.
+
+## TODO
+ - Correct width of order input  box, mobile error
 
 ## License
 

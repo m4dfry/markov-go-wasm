@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"strconv"
 	"strings"
 	"syscall/js"
 
@@ -10,15 +11,27 @@ import (
 
 var chain *gomarkov.Chain
 
+func echo(this js.Value, i []js.Value) interface{} {
+	return i[0].String()
+}
+
 func newChain(this js.Value, i []js.Value) interface{} {
-	order := i[0].Int()
+	order, err := strconv.Atoi(i[0].String())
+	if err != nil {
+		println("Error: invalid order.")
+		return -1
+	}
 	chain = gomarkov.NewChain(order)
 
 	return 1
 }
 
-func read(this js.Value, i []js.Value) interface{} {
-	return i[0].String()
+func load(this js.Value, i []js.Value) interface{} {
+	line := i[0].String()
+	chain.Add(strings.Split(line, " "))
+
+	println(line)
+	return 1
 }
 
 func getJSONChain(this js.Value, i []js.Value) interface{} {
@@ -30,20 +43,8 @@ func getJSONChain(this js.Value, i []js.Value) interface{} {
 	return string(json)
 }
 
-func load(this js.Value, i []js.Value) interface{} {
-	line := i[0].String()
-	chain.Add(strings.Split(line, " "))
-
-	json, err := json.Marshal(chain)
-	if err != nil {
-		return 0
-	}
-	//println(json)
-	return string(json)
-}
-
 func registerCallbacks() {
-	js.Global().Set("wRead", js.FuncOf(read))
+	js.Global().Set("wEcho", js.FuncOf(echo))
 	js.Global().Set("wLoad", js.FuncOf(load))
 	js.Global().Set("wNewChain", js.FuncOf(newChain))
 	js.Global().Set("wGetJsonChain", js.FuncOf(getJSONChain))

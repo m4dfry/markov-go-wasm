@@ -48,16 +48,23 @@ https://getbootstrap.com/docs/4.0/getting-started/introduction/#starter-template
 			}
 			);
 
-		function createChain() {
+		async function createChain() {
 			const order = document.getElementById('chain-order').value;
-			jCreateChain(order); // markov.js
+			console.log("Creating chain with order:", order);
+			try {
+				await jCreateChain(order); // markov.js
+				document.getElementById('chain-info').innerHTML = "Chain with order " + order + " created!";
+				document.getElementById('load-row').classList.remove("d-none");
+			} catch(e) {
+				alert(e);
+			}
 		}
 		function readTextArea() {
 			const data = document.getElementById('text-area').value;
-			read(data);
+			jRead(data);
 		}
-		function read() {
-			jRead(data); // markov.js
+		function read(data) {
+			jReadFile(data); // markov.js
 		}
 	</script>
 
@@ -71,38 +78,48 @@ https://getbootstrap.com/docs/4.0/getting-started/introduction/#starter-template
 		<div class="col-md-2 offset-md-1">
 			<div class="input-group mb-3">
 				<div class="input-group-append">
-					<span id="chain-order" class="input-group-text" id="inputGroup-sizing-default">Order</span>
+					<span class="input-group-text" id="inputGroup-sizing-default">Order</span>
 				</div>
-				<input type="text" class="form-control" aria-label="Default"
+				<input id="chain-order" type="text" class="form-control" aria-label="Default"
 					aria-describedby="inputGroup-sizing-default">
 			</div>
 		</div>
 		<div class="col-md-1">
-			<button onClick="createChain();" id="createChain" disabled class="btn btn-primary">Create Chain</button>
+			<button onClick="createChain();" id="createChain" class="btn btn-primary">Create Chain</button>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-md-8 offset-md-1">
-
-			<p>Write here </p>
-			<div class="input-group">
-				<textarea id="text-area" class="form-control" aria-label="With textarea"></textarea>
-				<div class="input-group-append">
-					<span class="input-group-text" onClick="readTextArea();">Load
-						text</span>
+	<div id="load-row" class="d-none">
+		<div class="row">
+			<div class="col-md-8 offset-md-1">
+				<p id="chain-info"><br/>
+				<p>Load the chain with text you prefer.<br/>
+					You can use this text box </p>
+				<div class="input-group">
+					<textarea id="text-area" class="form-control" aria-label="With textarea"></textarea>
+					<div class="input-group-append">
+						<span class="input-group-text" onClick="readTextArea();">Load
+							text</span>
+					</div>
 				</div>
+				<br />
+				<p>or load text from file :</p>
+				<div class="input-group mb-3">
+					<div class="custom-file">
+						<input type="file" class="custom-file-input" id="inputGroupFile02" onChange="read(this);">
+						<label class="custom-file-label" for="inputGroupFile02">Load file</label>
+					</div>
+				</div>
+				<p>You can upload the text as many times as you want. Each text will be added to the chain.</p>
 			</div>
-			<br />
-			<p>or load from file </p>
-			<div class="input-group mb-3">
-				<div class="custom-file">
-					<input type="file" class="custom-file-input" id="inputGroupFile02" onChange="read(this);">
-					<label class="custom-file-label" for="inputGroupFile02">Load file</label>
-				</div>
+			<br/>
+		</div>
+		<div id="execute-row" class="row">
+			<div class="col-md-1 offset-md-1"">
+				<button onClick="jGetJSONChain();" id="createJSONChain" class="btn btn-primary">Get JSON</button>
 			</div>
 		</div>
 	</div>
-
+			
 	<!-- Optional JavaScript -->
 	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

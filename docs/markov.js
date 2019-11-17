@@ -1,11 +1,12 @@
 
 async function run(data) {
-
-	console.log(wRead(data));
+	console.log(wEcho(data));
 }
 
 async function jCreateChain(order) {
-	console.log(wNewChain(order));
+	if (wNewChain(order) < 0) {
+		return new Error("Error creating chain with order: " + order);
+	}
 }
 
 async function jReadFile(file) {
@@ -13,17 +14,16 @@ async function jReadFile(file) {
 	
 	data.text().then(text => {
 		const chain = wLoad(text);
-		
 	});
 }
 
-async function jRead(data) {
-	const ret = wLoad(text);
+async function jRead(text) {
+	return wLoad(text);
 }
 
 async function jGetJSONChain() {
-	const ret = wGetJsonChain();
-	if(ret != 0) {
+	const chain = wGetJsonChain();
+	if(chain != 0) {
 		console.log(JSON.stringify(chain))
 	}
 }
