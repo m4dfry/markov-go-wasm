@@ -55,15 +55,16 @@ https://getbootstrap.com/docs/4.0/getting-started/introduction/#starter-template
 				await jCreateChain(order); // markov.js
 				document.getElementById('chain-info').innerHTML = "Chain with order " + order + " created!";
 				document.getElementById('load-row').classList.remove("d-none");
-			} catch(e) {
-				addAlert(e);
+			} catch (e) {
+				addAlert("danger", e);
 			}
 		}
 
-		function addAlert(message) {
+		// level values: success, danger, warning, info
+		function addAlert(level, message) {
 			document.getElementById('alert-container').insertAdjacentHTML('afterbegin',
-				`<div class="alert alert-warning alert-dismissible fade show" role="alert">
-					<strong>Error:</strong> ` + message + `
+				`<div class="alert alert-` + level + ` alert-dismissible fade show" role="alert">
+					<strong>` + level + `</strong> ` + message + `
 					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -72,9 +73,15 @@ https://getbootstrap.com/docs/4.0/getting-started/introduction/#starter-template
 		function readTextArea() {
 			const data = document.getElementById('text-area').value;
 			jRead(data);
+			addAlert("info", "Textbox loading success.");
 		}
-		function read(data) {
-			jReadFile(data); // markov.js
+		async function readFile(file) {
+			let data = file.files[0];
+			const text = await data.text()
+			jRead(text); // markov.js
+
+			let bid = file.value.lastIndexOf("\\");
+			addAlert("info", "Loading " + file.value.substring(bid + 1) + " success.");
 		}
 	</script>
 
@@ -83,8 +90,6 @@ https://getbootstrap.com/docs/4.0/getting-started/introduction/#starter-template
 			<h1>Go WASM - Markov Chain Playground!</h1>
 		</div>
 	</div>
-
-
 
 	<div class="row">
 		<div class="col-md-2 col-4 offset-md-1">
@@ -99,47 +104,89 @@ https://getbootstrap.com/docs/4.0/getting-started/introduction/#starter-template
 		<div class="col-md-1">
 			<button onClick="createChain();" id="createChain" class="btn btn-primary">Create Chain</button>
 		</div>
+		
 	</div>
 	<div id="load-row" class="d-none">
 		<div class="row">
 			<div class="col-md-8 offset-md-1">
-				<p id="chain-info"><br/>
-				<p>Load the chain with text you prefer.<br/>
-					You can use this text box </p>
+				<p id="chain-info"><br />
+			</div>
+			<div class="col-md-8 offset-md-1">
+				<h2>Load text models</h2>
+			</div>
+		
+		</div>
+
+		<div class="row">
+			<div class="col-md-8 offset-md-1">
 				
+					<p>Load the chain with text you prefer.<br />
+						You can use this text box </p>
 
-				<div class="input-group">
-					<textarea id="text-area" class="form-control" aria-label="With textarea"></textarea>
-					<button onClick="readTextArea();" class="btn btn-primary">Load</button>
-				</div>
 
-				<br />
-				<p>or load text from file :</p>
+					<div class="input-group">
+						<textarea id="text-area" class="form-control" aria-label="With textarea"></textarea>
+						<button onClick="readTextArea();" class="btn btn-primary">Load</button>
+					</div>
+
+					<br />
+					<p>or load text from file :</p>
+					<div class="input-group mb-3">
+						<div class="custom-file">
+							<input type="file" class="custom-file-input" id="inputGroupFile02"
+								onChange="readFile(this);">
+							<label class="custom-file-label" for="inputGroupFile02">Load file</label>
+						</div>
+					</div>
+					<p>You can upload the text as many times as you want. Each text will be added to the chain.</p>
+			</div>
+			<br />
+		</div>
+		<div class="row">
+			<div class="col-md-8 offset-md-1">
+				<h2>Generate text</h2>
+		
 				<div class="input-group mb-3">
-					<div class="custom-file">
-						<input type="file" class="custom-file-input" id="inputGroupFile02" onChange="read(this);">
-						<label class="custom-file-label" for="inputGroupFile02">Load file</label>
+						<div class="input-group-append">
+								<span class="input-group-text" id="inputGroup-sizing-default">Prefix</span>
+							</div>
+					<input type="text" class="form-control" placeholder="It must contain a number of words equal to the chain order" aria-label="prefix"
+						aria-describedby="basic-addon1">
+				</div>
+			</div>
+		
+		</div>
+		<div class="row">
+				<div class="col-md-2 col-4 offset-md-1">
+					<div class="input-group mb-3">
+						<div class="input-group-append">
+							<span class="input-group-text" id="inputGroup-sizing-default">Lenght</span>
+						</div>
+						<input id="chain-order" type="text" class="form-control" aria-label="Default"
+							aria-describedby="inputGroup-sizing-default">
 					</div>
 				</div>
-				<p>You can upload the text as many times as you want. Each text will be added to the chain.</p>
-			</div>
-			<br/>
+				<div class="col-md-1">
+					<button onClick="generateText();" id="generateText" class="btn btn-primary">Generate</button>
+				</div>
 		</div>
+		<br />
 		<div id="execute-row" class="row">
-			<div class="col-md-1 offset-md-1"">
-				<button onClick="jGetJSONChain();" id="createJSONChain" class="btn btn-primary">Get JSON</button>
+			<div class="col-md-1 offset-md-1">
+				<button onClick=" jGetJSONChain();" id="createJSONChain" class="btn btn-primary">Get JSON</button>
 			</div>
 		</div>
-		
+
 	</div>
+	<br />
 	<div class="row">
 		<div id="alert-container" class="col-md-10 offset-md-1">
-			<div class="alert alert-warning alert-dismissible fade show" role="alert">
+			<!--<div class="alert alert-warning alert-dismissible fade show" role="alert">
 				<strong>Error:</strong> You should check in on some of those fields below.
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 			  		<span aria-hidden="true">&times;</span>
 				</button>
-		  	</div>
+		  	</div> -->
 		</div>
 	</div>
 	<!-- Optional JavaScript -->

@@ -29,8 +29,6 @@ func newChain(this js.Value, i []js.Value) interface{} {
 func load(this js.Value, i []js.Value) interface{} {
 	line := i[0].String()
 	chain.Add(strings.Split(line, " "))
-
-	println(line)
 	return 1
 }
 
