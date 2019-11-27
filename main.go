@@ -38,18 +38,23 @@ func load(this js.Value, i []js.Value) interface{} {
 func generate(this js.Value, i []js.Value) interface{} {
 	in := i[0].String()
 	lenght := i[1].Int()
-	text := in
+	text := strings.Title(in)
 	prefix := strings.Split(in, " ")
-	for i := 0; i < lenght; i++ {
+	for (lenght > 0 || !endWithPunctuation(text)) { 
 		next, err := chain.Generate(prefix)
 		if err != nil  {
-			return text
+			return "0|" + err.Error() + ", partial generated:" + text
 		}
 		text += " " + next
-		prefix = append(prefix[1:], next)
+		prefix = append(prefix[1:], next) // shift and push
+		lenght--
 	}
 	
-	return text
+	return "1|" + text
+}
+
+func endWithPunctuation(s string) bool {
+	return strings.HasSuffix(s, ".") || strings.HasSuffix(s, "!") || strings.HasSuffix(s, "?")
 }
 
 func getJSONChain(this js.Value, i []js.Value) interface{} {

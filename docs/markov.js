@@ -19,9 +19,18 @@ async function jGetJSONChain() {
 	}
 }
 
-async function jGenerate(prefix, length) {
+function jGenerate(prefix, length) {
 	const res = wGenerate(prefix, length);
-	console.log(res)
+	const genArr = res.split("|");
+
+	if (genArr.length <2 ) {
+		throw new Error("Error on WASM generating output.");
+	}
+	if (genArr[0] != "1") {
+		throw new Error("Error generating text:" + genArr[1]);		
+	} 
+	
+	return genArr[1];	
 }
 
 

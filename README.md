@@ -21,7 +21,7 @@ Go compiler for WASM is on early stage an library like "syscall/js" are still in
 This project is compiled with Go 1.13.4.
 
 ## TODO
- - Add sentence creation from seed
+ - Attach alerts on current bottom, not under buttons
  - Check if seed is OK with order
  - Export JSON on file
 

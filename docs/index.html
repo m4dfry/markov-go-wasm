@@ -18,7 +18,7 @@ https://getbootstrap.com/docs/4.0/getting-started/introduction/#starter-template
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
 		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+	
 	<title>Markov Playground</title>
 </head>
 
@@ -91,6 +91,16 @@ https://getbootstrap.com/docs/4.0/getting-started/introduction/#starter-template
 				cont.classList.remove("d-none");
 			}
 		}
+		function generateText() {
+			const  prefix = document.getElementById('text-prefix').value;
+			const sLenght = document.getElementById('text-lenght').value;
+			const lenght = parseInt(sLenght);
+			try{
+				document.getElementById('text-gen').innerHTML = jGenerate(prefix, lenght);
+			} catch (e) {
+				addAlert("danger", e);
+			}
+		}
 	</script>
 
 	<div class="row">
@@ -158,7 +168,7 @@ https://getbootstrap.com/docs/4.0/getting-started/introduction/#starter-template
 					<div class="input-group-append">
 						<span class="input-group-text" id="inputGroup-sizing-default">Prefix</span>
 					</div>
-					<input type="text" class="form-control"
+					<input id="text-prefix" type="text" class="form-control"
 						placeholder="It must contain a number of words equal to the chain order" aria-label="prefix"
 						aria-describedby="basic-addon1">
 				</div>
@@ -169,14 +179,19 @@ https://getbootstrap.com/docs/4.0/getting-started/introduction/#starter-template
 			<div class="col-md-2 col-4 offset-md-1">
 				<div class="input-group mb-3">
 					<div class="input-group-append">
-						<span class="input-group-text" id="inputGroup-sizing-default">Lenght</span>
+						<span class="input-group-text" id="inputGroup-sizing-default">Min.Lenght</span>
 					</div>
-					<input id="chain-order" type="text" class="form-control" aria-label="Default"
+					<input id="text-lenght" type="text" class="form-control" aria-label="Default"
 						aria-describedby="inputGroup-sizing-default">
 				</div>
 			</div>
 			<div class="col-md-1">
-				<button onClick="jGenerate('rosa viola', 3);" id="generateText" class="btn btn-primary">Generate</button>
+				<button onClick="generateText();" id="generateText" class="btn btn-primary">Generate</button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8 offset-md-1">
+				<strong>Generated: </strong><p id="text-gen"><br />
 			</div>
 		</div>
 		<br />
